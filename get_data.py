@@ -36,5 +36,6 @@ np.save('data/IgE_train_features',x_train)
 np.save('data/IgE_train_features_stand',x_train_stand)
 np.save('data/IgE_train_labels',y_train)
 np.save('data/IgE_test_features',x_test)
+np.save('data/IgE_test_features_stand',x_test_stand)
 np.save('data/IgE_test_labels',y_test)
 
