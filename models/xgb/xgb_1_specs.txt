@@ -1,0 +1,4 @@
+xgb_1
+{'objective': 'binary:logistic', 'max_depth': 5}
+('train_score', 0.5353724129108334)
+('test_score', 0.5243981636994738)
