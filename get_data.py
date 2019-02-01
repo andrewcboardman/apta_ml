@@ -6,7 +6,7 @@ x_bind = np.genfromtxt('data/sk/sk_encode.txt')
 n_bind = x_bind.shape[0]
 
 # Load control sequences
-x_control = np.genfromtxt('data/sk/sk_encode.txt')
+x_control = np.genfromtxt('data/random/random_encode.txt')
 n_control = x_control.shape[0]
 
 # Combine binding and control
@@ -24,7 +24,7 @@ x_means = np.mean(x,axis=0)
 x_stds = np.std(x,axis=0)
 x_stand = (x - x_means) / x_stds
 
-train_test = np.random.rand(shape=y.size) > 0.8
+train_test = np.random.rand(y.size) > 0.8
 np.savetxt('data/sk/sk_train_test.txt',train_test.astype(bool))
 
 x_train = x[np.logical_not(train_test),...]
