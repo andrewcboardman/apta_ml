@@ -1,9 +1,6 @@
 env
 data
-models
+models/bad_data
 __pycache__
-r2_qc.fasta
-r3_qc.fasta
-r4_qc.fasta
-r5_qc.fasta
+
 
