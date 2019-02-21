@@ -43,7 +43,7 @@ def num2string(x,L):
 	return ''.join(seq)
 
 def main():
-	N = 100000 # number of samples to generate
+	N = 1000000 # number of samples to generate
 	L = 40 # number of spins
 	q = 3 # number of states
 	n = 200 # number of Monte Carlo steps between samples
@@ -51,8 +51,8 @@ def main():
 	b = 1 # inverse temperature
 
 	# Initialise simulation 
-	h = b*np.genfromtxt('h_sk.txt').reshape(L,q)
-	J = b*np.genfromtxt('J_sk.txt').reshape(L,q,L,q)
+	h = b*np.genfromtxt('data/sk/h_sk.txt').reshape(L,q)
+	J = b*np.genfromtxt('data/sk/J_sk.txt').reshape(L,q,L,q)
 	nums = np.zeros((N,L,q)).astype(int)
 	energy = np.zeros(N)
 	nums[0,range(L),np.random.randint(q,size=L)] = 1
@@ -68,8 +68,8 @@ def main():
 	# convert to sequence format and write to file
 	strings = (num2string(num,L) for num in nums)
 	seqs = (SeqRecord(Seq(string),id=f'sample {i}') for i,string in enumerate(strings))
-	SeqIO.write(seqs,'sk_seqs.fasta','fasta')
-	np.savetxt('sk_energies.txt',energy)
+	SeqIO.write(seqs,'data/sk/sk2_seqs.fasta','fasta')
+	np.savetxt('data/sk/sk2_energies.txt',energy)
 
 if __name__ == '__main__':
 	main()
