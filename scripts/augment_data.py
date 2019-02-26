@@ -3,6 +3,7 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from itertools import chain
+import argparse
 # Take inputs
 parser = argparse.ArgumentParser()
 parser.add_argument('-i','--infile',action='store',help='Input file')

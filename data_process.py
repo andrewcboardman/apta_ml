@@ -1,7 +1,7 @@
 import argparse
 import numpy as np
 import os 
-import pickle as pkl
+import pickle
 from sklearn.model_selection import train_test_split
 
 
@@ -19,18 +19,15 @@ n2 = data2.shape[0]
     
 # Make inputs into 1 array
 features = np.concatenate((data1,data2))
-labels = np.concatenate(np.zeros(n1),np.ones(n2))
+labels = np.concatenate((np.zeros(n1),np.ones(n2)))
 
 # Standardise features
-features_stand = (features - np.mean(features,axis=0)) / np.std(features,axis=0)
+features_stand = (features - np.mean(features,axis=0)) / (np.std(features,axis=0) + 0.01)
 
 # Split into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(features,labels,train_size=0.8,test_size=0.2)
 
-# Make output folder
-if not os.path.isdir(args.outfile):
-    os.makedirs(args.outfile)
-    
+
 # Pickle numpy arrays
 with open(args.outfile,'wb') as fid:
     pickle.dump((X_train,y_train,X_test,y_test),fid)

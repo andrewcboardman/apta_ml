@@ -12,6 +12,7 @@ parser.add_argument('-d','--max_depth',type=int, action='store',help='Tree depth
 parser.add_argument('-g','--gamma',type=float,action='store',help='Regularisation parameter')
 parser.add_argument('-e','--eta',type=float,action='store',default=0.001,help='Learning rate')
 parser.add_argument('-n','--n_round',type=int,action='store',default=10,help='Number of boosting rounds')
+parser.add_argument('-c','--crossvalid',type=bool,action='store_true',default=False,help='Perform 10-fold cross-validation')
 args = parser.parse_args()
 
 # Import data
@@ -20,15 +21,28 @@ with open(args.infile,'rb') as fh:
 dtrain = xgb.Dmatrix(x_train,label=y_train)
 dtest = xgb.Dmatrix(x_test,label=y_test)
 
-# Train gradient booster
+# Set hyperparameters
 param = {'max_depth': args.max_depth, 'eta': args.eta, 'silent': 1, 'objective': 'binary:logistic'}
-evallist = [(dtest, 'eval'), (dtrain, 'train')]
-bst = xgb.train(param, dtrain, args.n_round, evallist)
 
-# Test gradient booster
-test_pred = np.stack((y_test,np.squeeze(bst.predict(dtest))))
 
-# Save model
-bst.save_model(args.outfile + '_bst.mdl')
-# Save predictions on test set
-np.savetxt(args.outfile + '_test_pred.txt.gz',test_pred)
+if args.crossvalid:
+	history = xgb.cv(param,dtrain,num_boost_round=args.n_round, nfold=10,
+             metrics={'error'}, seed=0,
+             callbacks=[xgb.callback.print_evaluation(show_stdv=False),xgb.callback.early_stop(3)])
+
+	# save cross validation history
+	with open(args.outfile + '_hist.json', 'w') as f:
+   		json.dump(history, f)
+
+else:
+	# Train gradient booster
+	evallist = [(dtest, 'eval'), (dtrain, 'train')]
+	bst = xgb.train(param, dtrain, args.n_round, evallist)
+
+	# Test gradient booster
+	test_pred = np.stack((y_test,np.squeeze(bst.predict(dtest))))
+
+	# Save model
+	bst.save_model(args.outfile + '_bst.mdl')
+	# Save predictions on test set
+	np.savetxt(args.outfile + '_test_pred.txt.gz',test_pred)
