@@ -4,12 +4,48 @@
 		"selected_items":
 		[
 			[
-				"p",
-				"parent_probe_name"
+				"train",
+				"train_epochs"
+			],
+			[
+				"n_",
+				"n_dense_units"
+			],
+			[
+				"n",
+				"n_dense_layers"
+			],
+			[
+				"inp",
+				"input_shape"
+			],
+			[
+				"in",
+				"in"
+			],
+			[
+				"pc",
+				"pc_data"
+			],
+			[
+				"rand",
+				"rand_recs"
 			],
 			[
 				"Seq",
-				"SeqRecord"
+				"SeqIO"
+			],
+			[
+				"seq",
+				"sequence"
+			],
+			[
+				"def",
+				"default"
+			],
+			[
+				"p",
+				"parent_probe_name"
 			],
 			[
 				"I",
@@ -36,10 +72,6 @@
 				"IsingEnergy"
 			],
 			[
-				"rand",
-				"random"
-			],
-			[
 				"new",
 				"new_base"
 			],
@@ -60,16 +92,8 @@
 				"x_train"
 			],
 			[
-				"seq",
-				"SeqIO"
-			],
-			[
 				"IG",
 				"IgE_train_features_stand"
-			],
-			[
-				"n",
-				"n_train"
 			],
 			[
 				"y",
@@ -116,10 +140,6 @@
 				"astype"
 			],
 			[
-				"train",
-				"train_test"
-			],
-			[
 				"roc",
 				"roc_auc_score"
 			],
@@ -132,10 +152,6 @@
 				"train_test"
 			],
 			[
-				"n_",
-				"n_bind"
-			],
-			[
 				"x_t",
 				"x_train"
 			],
@@ -146,10 +162,6 @@
 			[
 				"b",
 				"bin_edges"
-			],
-			[
-				"in",
-				"infile"
 			],
 			[
 				"load",
@@ -516,13 +528,40 @@
 	},
 	"expanded_folders":
 	[
-		"/home/andrew/Documents/part3/apta_ml"
+		"/home/andrew/Documents/part3/apta_ml",
+		"/home/andrew/Documents/part3/apta_ml/data",
+		"/home/andrew/Documents/part3/apta_ml/data_stats",
+		"/home/andrew/Documents/part3/apta_ml/models",
+		"/home/andrew/Documents/part3/apta_ml/models/bad_data",
+		"/home/andrew/Documents/part3/apta_ml/models/code",
+		"/home/andrew/Documents/part3/apta_ml/scripts"
 	],
 	"file_history":
 	[
-		"/home/andrew/Documents/part3/ortho-cha/ortho_cha.py",
+		"/home/andrew/Documents/part3/apta_ml/scripts/train_cnn.py",
 		"/home/andrew/Documents/part3/ortho-cha/nupack_script.txt",
+		"/home/andrew/Documents/part3/ortho-cha/single_cha2.np",
+		"/home/andrew/Documents/part3/apta_ml/scripts/train_gan.py",
+		"/home/andrew/Documents/part3/apta_ml/xgb_train.py",
+		"/home/andrew/Documents/part3/ortho-cha/simple_cha.np",
+		"/home/andrew/Documents/part3/ortho-cha/multi_cha.np",
+		"/home/andrew/Documents/part3/ortho-cha/single_cha.np",
+		"/home/andrew/Documents/part3/apta_ml/metrics.R",
+		"/home/andrew/Documents/part3/ortho-cha/nupack3.2.2/doc/examples/multitube-design/simple/inut",
+		"/home/andrew/Documents/part3/ortho-cha/nupack3.2.2/README",
+		"/home/andrew/Documents/part3/ortho-cha/README.md",
+		"/home/andrew/Documents/part3/apta_ml/train_cnn.py",
+		"/home/andrew/Documents/part3/apta_ml/pca_plot.py",
+		"/home/andrew/Documents/part3/apta_ml/nuc_stats.py",
 		"/home/andrew/Documents/part3/apta_ml/encode.py",
+		"/home/andrew/Documents/part3/apta_ml/gen_seqs_ising.py",
+		"/home/andrew/Documents/part3/apta_ml/.gitignore",
+		"/home/andrew/Documents/part3/apta_ml/get_seqs_random.py",
+		"/home/andrew/Documents/part3/apta_ml/models/__init__.py",
+		"/home/andrew/Documents/part3/apta_ml/models/code/test.py",
+		"/home/andrew/Documents/part3/apta_ml/test_script.py",
+		"/home/andrew/Documents/part3/apta_ml/models/code/__init__.py",
+		"/home/andrew/Documents/part3/ortho-cha/ortho_cha.py",
 		"/home/andrew/Documents/part3/apta_ml/get_data.py",
 		"/home/andrew/Documents/part3/apta_ml/pp_clade.py",
 		"/home/andrew/Documents/part3/apta_ml/data/CLADE/KnightST3R1.xls",
@@ -540,14 +579,12 @@
 		"/home/andrew/Documents/part3/apta_ml/augment_data.py",
 		"/home/andrew/Documents/part3/apta_ml/naive_bayes_train.py",
 		"/home/andrew/Documents/part3/apta_ml/grad_boost_train.py",
-		"/home/andrew/Documents/part3/apta_ml/metrics.R",
 		"/home/andrew/Documents/part3/apta_ml/grad_boost_test.py",
 		"/home/andrew/Documents/part3/apta_ml/grad_boost_interpret.py",
 		"/home/andrew/Documents/part3/apta_ml/train_mlp.py",
 		"/home/andrew/Documents/part3/apta_ml/grad_boost_te",
 		"/home/andrew/Documents/part3/apta_ml/bedroc.py",
 		"/home/andrew/Documents/part3/apta_ml/train_rnn.py",
-		"/home/andrew/Documents/part3/apta_ml/train_cnn.py",
 		"/home/andrew/Documents/part3/apta_ml/mlp_train.py",
 		"/home/andrew/Documents/part3/aptamers/model_training/train_mlp.py",
 		"/home/andrew/Documents/part3/aptamers/preprocess/encode.py",
@@ -628,19 +665,11 @@
 		"/home/andrew/Documents/summer_project/ML_prior.py",
 		"/home/andrew/Documents/summer_project/master_bayes_data_process",
 		"/home/andrew/Documents/summer_project/params_secondary.py",
-		"/home/andrew/Documents/summer_project/secondary_1e-06.csv",
-		"/home/andrew/Documents/summer_project/secondary_6.csv",
-		"/home/andrew/Documents/summer_project/secondary_7.csv",
-		"/home/andrew/Documents/summer_project/noise_Gaussian.py",
-		"/home/andrew/Documents/summer_project/noise_Gaussian",
-		"/home/andrew/Documents/summer_project/SC_solution_1.py",
-		"/home/andrew/Documents/summer_project/requirements.txt",
-		"/home/andrew/Documents/summer_project/SCF_solution_1.py",
-		"/home/andrew/Documents/summer_project/SCF_solution_1"
+		"/home/andrew/Documents/summer_project/secondary_1e-06.csv"
 	],
 	"find":
 	{
-		"height": 26.0
+		"height": 39.0
 	},
 	"find_in_files":
 	{
@@ -654,6 +683,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"A2",
+			", ",
 			"cell_turn",
 			"const_para",
 			"tau",
