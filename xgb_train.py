@@ -8,18 +8,18 @@ import pickle
 parser = argparse.ArgumentParser()
 parser.add_argument('-i','--infile',action='store',help='Input file')
 parser.add_argument('-o','--outfile',action='store',help='Output file tag')
-parser.add_argument('-d','--max_depth',type=int, action='store',help='Tree depth')
-parser.add_argument('-g','--gamma',type=float,action='store',help='Regularisation parameter')
+parser.add_argument('-d','--max_depth',type=int, action='store',default=10,help='Tree depth')
+parser.add_argument('-g','--gamma',type=float,action='store',default=0,help='Regularisation parameter')
 parser.add_argument('-e','--eta',type=float,action='store',default=0.001,help='Learning rate')
 parser.add_argument('-n','--n_round',type=int,action='store',default=10,help='Number of boosting rounds')
-parser.add_argument('-c','--crossvalid',type=bool,action='store_true',default=False,help='Perform 10-fold cross-validation')
+parser.add_argument('-c','--crossvalid',action='store_true',default=False,help='Perform 10-fold cross-validation')
 args = parser.parse_args()
 
 # Import data
 with open(args.infile,'rb') as fh:
     x_train,y_train,x_test,y_test = pickle.load(fh)
-dtrain = xgb.Dmatrix(x_train,label=y_train)
-dtest = xgb.Dmatrix(x_test,label=y_test)
+dtrain = xgb.DMatrix(x_train,label=y_train)
+dtest = xgb.DMatrix(x_test,label=y_test)
 
 # Set hyperparameters
 param = {'max_depth': args.max_depth, 'eta': args.eta, 'silent': 1, 'objective': 'binary:logistic'}
@@ -31,8 +31,7 @@ if args.crossvalid:
              callbacks=[xgb.callback.print_evaluation(show_stdv=False),xgb.callback.early_stop(3)])
 
 	# save cross validation history
-	with open(args.outfile + '_hist.json', 'w') as f:
-   		json.dump(history, f)
+	history.to_csv(args.outfile + '_history.csv')
 
 else:
 	# Train gradient booster

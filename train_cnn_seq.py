@@ -1,10 +1,11 @@
 import argparse
 import numpy as np
 from keras.models import Sequential
-from keras.layers import Conv1D, MaxPooling1D, Dense, Dropout
+from keras.layers import Conv1D, MaxPooling1D, Dense, Dropout,Flatten,Reshape
 from keras.optimizers import Adam
 import json
 from sklearn.model_selection import StratifiedKFold
+import pickle
 
 # Take hyperparameter inputs
 parser = argparse.ArgumentParser()
@@ -17,7 +18,7 @@ parser.add_argument('--dense_n',type=int,action='store',default=100,help='Number
 parser.add_argument('--dr',type=float,action='store',default=0.1,help='Dropout rate')
 parser.add_argument('--lr',type=float,action='store',default=0.001,help='Learning rate for Adam optimizer')
 parser.add_argument('-e','--epochs',type=int,action='store',default=10,help='Number of epochs to train for')
-parser.add_argument('-c','--crossvalid',type=bool,action='store_true',default=False,help='Perform 10-fold cross-validation')
+parser.add_argument('-c','--crossvalid',action='store_true',default=False,help='Perform 10-fold cross-validation')
 args = parser.parse_args()
 
 # Import data
@@ -26,7 +27,8 @@ with open(args.infile,'rb') as fh:
 
 # Build network
 model = Sequential()
-model.add(Conv1D(args.conv_n, args.conv_w, activation='relu', input_shape=(40, 3)))
+model.add(Reshape((40,3),input_shape=(120,)))
+model.add(Conv1D(args.conv_n, args.conv_w, activation='relu'))
 model.add(MaxPooling1D(3))
 model.add(Flatten())
 for i in range(args.dense_N):
@@ -37,15 +39,14 @@ for i in range(args.dense_N):
 model.add(Dense(1,activation='sigmoid'))
           
 # Compile
-history = model.compile(loss='binary_crossentropy',optimizer=Adam(lr=args.lr),metrics=['accuracy'])
+model.compile(loss='binary_crossentropy',optimizer=Adam(lr=args.lr),metrics=['accuracy'])
 if args.crossvalid:
 	skf = StratifiedKFold(labels, n_folds=10, shuffle=True)
 
 	
 else:
 	# Train
-	model.fit(x_train,y_train,epochs=args.epochs,batch_size=128)
-
+	hist = model.fit(x_train,y_train,epochs=args.epochs,batch_size=128)
 	# Test
 	test_pred = np.stack((y_test,np.squeeze(model.predict(x_test))))
 	# Save model

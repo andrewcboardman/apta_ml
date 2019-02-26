@@ -7,7 +7,7 @@ import pickle
 parser = argparse.ArgumentParser()
 parser.add_argument('-i','--infile',action='store',help='Input file')
 parser.add_argument('-o','--outfile',action='store',help='Output file tag')
-parser.add_argument('-r','--reg',type=float,action='store',help='inverse regularisation strength')
+parser.add_argument('-r','--reg',type=float,action='store',default=1.0,help='inverse regularisation strength')
 args = parser.parse_args()
 
 # Import data
