@@ -6,6 +6,10 @@ from keras.optimizers import Adam
 import json
 from sklearn.model_selection import StratifiedKFold
 import pickle
+import h5py
+from keras.utils.io_utils import HDF5Matrix
+import dask.dataframe as dd
+
 
 # Take hyperparameter inputs
 parser = argparse.ArgumentParser()
@@ -22,8 +26,10 @@ parser.add_argument('-c','--crossvalid',action='store_true',default=False,help='
 args = parser.parse_args()
 
 # Import data
-with open(args.infile,'rb') as fh:
-    x_train,y_train,x_test,y_test = pickle.load(fh)
+x_train = HDF5Matrix(args.infile,'/x_train')
+x_test = HDF5Matrix(args.infile,'/x_test')
+y_train = HDF5Matrix(args.infile,'/y_train')
+y_test = HDF5Matrix(args.infile,'/y_test')
 
 # Build network
 model = Sequential()
@@ -46,20 +52,26 @@ if args.crossvalid:
 	
 else:
 	# Train
-	hist = model.fit(x_train,y_train,epochs=args.epochs,batch_size=128)
+	hist = model.fit(x_train,y_train,epochs=args.epochs,batch_size=128,shuffle='batch')
+
 	# Test
-	test_pred = np.stack((y_test,np.squeeze(model.predict(x_test))))
+	y_predict = model.predict(x_test)
+	test_pred = dd.DataFrame({'true':y_test,'pred':y_predict})
+
 	# Save model
 	model.save(args.outfile + '_cnn')
+
 	# Save model summary
 	with open(args.outfile + '_report.txt','w') as fh:
 	    # Pass the file handle in as a lambda function to make it callable
 	    model.summary(print_fn=lambda x: fh.write(x + '\n'))
+
 	# Save model history
 	with open(args.outfile + '_hist.json', 'w') as f:
 	    json.dump(hist.history, f)
+
 	# Save predictions on test set
-	np.savetxt(args.outfile + '_test_pred.txt.gz',test_pred)
+	test_pred.to_csv(args.outfile + '_test_pred_*.csv')
 
           
           

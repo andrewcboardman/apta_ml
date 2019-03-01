@@ -1,8 +1,9 @@
-import xgboost as xgb
+from dask_ml.xgboost import XGBClassifier
 import argparse
 import numpy as np
 import json
 import pickle
+import h5py
 
 # Take hyperparameter inputs
 parser = argparse.ArgumentParser()
@@ -16,10 +17,11 @@ parser.add_argument('-c','--crossvalid',action='store_true',default=False,help='
 args = parser.parse_args()
 
 # Import data
-with open(args.infile,'rb') as fh:
-    x_train,y_train,x_test,y_test = pickle.load(fh)
-dtrain = xgb.DMatrix(x_train,label=y_train)
-dtest = xgb.DMatrix(x_test,label=y_test)
+f = h5py.File(args.infile)
+x_train = da.from_array(f['/x_train'])
+x_test = da.from_array(f['/x_test'])
+y_train = da.from_array(f['/y_train'])
+y_test = da.from_array(f['/y_test'])
 
 # Set hyperparameters
 param = {'max_depth': args.max_depth, 'eta': args.eta, 'silent': 1, 'objective': 'binary:logistic'}
@@ -35,13 +37,16 @@ if args.crossvalid:
 
 else:
 	# Train gradient booster
-	evallist = [(dtest, 'eval'), (dtrain, 'train')]
-	bst = xgb.train(param, dtrain, args.n_round, evallist)
+	clf = XGBClassifier(max_depth= args.max_depth, learning_rate= args.eta)
+	clf.fit(x_train,y_train)
 
 	# Test gradient booster
-	test_pred = np.stack((y_test,np.squeeze(bst.predict(dtest))))
+	y_predict = clf.predict(x_test)
+	test_pred = dd.DataFrame({'true':y_test,'pred':y_predict})
+
+	# Save predictions on test set
+	test_pred.to_csv(args.outfile + '_test_pred_*.csv')
 
 	# Save model
-	bst.save_model(args.outfile + '_bst.mdl')
-	# Save predictions on test set
-	np.savetxt(args.outfile + '_test_pred.txt.gz',test_pred)
+	clf.save(args.outfile + '_model')
+	
