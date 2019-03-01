@@ -25,6 +25,7 @@ data2['label'] = 1
 # Concatenate
 data1.append(data2)
 
+
 # split to arrays
 X = data1.values[:-1,:]
 y = data1.values[-1,:]
@@ -38,9 +39,9 @@ if args.standardise:
 	X_stand = (X - X_mean_arr) / X_std_arr
 
 	# Split into training and test sets
-	X_train, X_test, y_train, y_test = train_test_split(X_stand,y,train_size=0.8,test_size=0.2)
+	X_train, X_test, y_train, y_test = train_test_split(X_stand,y,train_size=0.8,test_size=0.2,blockwise=False)
 else:
 	# Split into training and test sets
-	X_train, X_test, y_train, y_test = train_test_split(X,y,train_size=0.8,test_size=0.2)
+	X_train, X_test, y_train, y_test = train_test_split(X,y,train_size=0.8,test_size=0.2,blockwise=False)
 
 da.to_hdf5(args.outfile,{'/x_train':X_train,'/x_test':X_test,'/y_train':y_train,'/y_test':y_test})
