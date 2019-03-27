@@ -38,13 +38,13 @@ def main():
 		coded_strings = (seq2code(string) for string in strings)
 		with open(args.outfile,'w') as file:
 			for record in coded_strings:
-				file.write(' '.join(record.astype(str).flatten())+'\n')
+				file.write(','.join(record.astype(str).flatten())+'\n')
 	elif args.mode == 'struct':
 		strings = (str(seq.seq) for seq in seqs)
 		coded_strings = (seqstruct2code(string) for string in strings)
 		with open(args.outfile,'w') as file:
 			for record in coded_strings:
-				file.write(' '.join(record.astype(str).flatten())+'\n')
+				file.write(','.join(record.astype(str).flatten())+'\n')
 
 if __name__ == '__main__':
 	main()

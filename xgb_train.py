@@ -4,6 +4,7 @@ import numpy as np
 import json
 import pickle
 import h5py
+import dask.array as da
 
 # Take hyperparameter inputs
 parser = argparse.ArgumentParser()
@@ -17,17 +18,36 @@ parser.add_argument('-c','--crossvalid',action='store_true',default=False,help='
 args = parser.parse_args()
 
 # Import data
-f = h5py.File(args.infile)
-x_train = da.from_array(f['/x_train'])
-x_test = da.from_array(f['/x_test'])
-y_train = da.from_array(f['/y_train'])
-y_test = da.from_array(f['/y_test'])
+f = h5py.File('test.hdf5','r')
+x_train = da.from_array(f['/x_train'],chunks=1000)
+x_test = da.from_array(f['/x_test'],chunks=1000)
+y_train = da.from_array(f['/y_train'],chunks=1000)
+y_test = da.from_array(f['/y_test'],chunks=1000)
+x_train = da.concatenate((x_train[:,:,0],
+	x_train[:,:,1],
+	x_train[:,:,2],
+	x_train[:,:,3]), axis=1)
+x_test = da.concatenate((x_test[:,:,0],
+	x_test[:,:,1],
+	x_test[:,:,2],
+	x_test[:,:,3]), axis=1)
+
+
+print(y_train.reshape(80,1))
 
 # Set hyperparameters
-param = {'max_depth': args.max_depth, 'eta': args.eta, 'silent': 1, 'objective': 'binary:logistic'}
-
+#param = {'max_depth': args.max_depth, 'eta': args.eta, 'silent': 1, 'objective': 'binary:logistic'}
+params = {'objective': 'binary:logistic',
+          'max_depth': 4, 'eta': 0.01, 'subsample': 0.5,
+          'min_child_weight': 0.5}
+from dask.distributed import Client
+client = Client()
+import dask_xgboost
+bst = dask_xgboost.train(client, params, x_train, y_train, num_boost_round=10)
+assert 1==0
 
 if args.crossvalid:
+	dtrain = xgb.DMatrix(x_train,labels=y_train)
 	history = xgb.cv(param,dtrain,num_boost_round=args.n_round, nfold=10,
              metrics={'error'}, seed=0,
              callbacks=[xgb.callback.print_evaluation(show_stdv=False),xgb.callback.early_stop(3)])
