@@ -1,0 +1,6 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+
+data = read.csv('~/Downloads/Ilk_pool_E.txt',header = FALSE,sep=' ')

@@ -28,7 +28,7 @@ class MFPotts():
 		# Field-related energies
 		fE = -np.tensordot(samples,self.h,axes=2)
 		# Coupling-related energies
-		cE = -100*np.einsum('ijk,jklm,ilm->i',samples,self.J,samples)/2
+		cE = -np.einsum('ijk,jklm,ilm->i',samples,self.J,samples)/2
 		return fE + cE
 
 class MFPottsClassifier():
