@@ -1,10 +1,9 @@
+from dask_ml.xgboost import XGBClassifier
 import argparse
 import numpy as np
 import json
 import pickle
 import h5py
-import xgboost as xgb
-import pandas as pd
 
 # Take hyperparameter inputs
 parser = argparse.ArgumentParser()
@@ -18,45 +17,35 @@ parser.add_argument('-c','--crossvalid',action='store_true',default=False,help='
 args = parser.parse_args()
 
 # Import data
-f = h5py.File('test.hdf5','r')
-x_train = np.array(f['/x_train'])
-x_test = np.array(f['/x_test'])
-y_train = np.array(f['/y_train'])
-y_test = np.array(f['/y_test'])
-x_train = x_train.reshape(f['/n_train'][...],160)
-x_test = x_test.reshape(f['/n_test'][...],160)
-
-
+f = h5py.File(args.infile)
+x_train = da.from_array(f['/x_train'])
+x_test = da.from_array(f['/x_test'])
+y_train = da.from_array(f['/y_train'])
+y_test = da.from_array(f['/y_test'])
 
 # Set hyperparameters
-params = {'max_depth': args.max_depth, 'eta': args.eta, 'silent': 1, 'objective': 'binary:logistic'}
-
-dtrain = xgb.DMatrix(x_train,label=y_train)
-dtest = xgb.DMatrix(x_test,label=y_test)
+param = {'max_depth': args.max_depth, 'eta': args.eta, 'silent': 1, 'objective': 'binary:logistic'}
 
 
-if not args.crossvalid:
-	# Train gradient booster
-	clf = xgb.train(params,dtrain)
-
-	# Test gradient booster
-	y_predict = clf.predict(dtest)
-	test_pred = pd.DataFrame({'true':y_test,'pred':y_predict})
-
-	# Save predictions on test set
-	test_pred.to_csv(args.outfile + '_test_pred.csv')
-
-	# Save model
-	with open(args.outfile + '_model','wb') as fh:
-		pickle.dump(clf,fh)
-
-else:
-
+if args.crossvalid:
 	history = xgb.cv(param,dtrain,num_boost_round=args.n_round, nfold=10,
              metrics={'error'}, seed=0,
              callbacks=[xgb.callback.print_evaluation(show_stdv=False),xgb.callback.early_stop(3)])
 
 	# save cross validation history
 	history.to_csv(args.outfile + '_history.csv')
-	
-	
+
+else:
+    # Train gradient booster
+    clf = XGBClassifier(max_depth= args.max_depth, learning_rate= args.eta,n_estimators = args.n_round)
+    clf.fit(x_train,y_train)
+    
+    # Test gradient booster
+    y_predict = clf.predict(x_test)
+
+    # Save predictions on test set
+    with h5py.File(args.outfile,'w') as f:
+        f.create_dataset('/true',data=y_test)
+        f.create_dataset('/pred',data=y_predict)
+    # Save model
+    clf.save(args.outfile + '_model')
